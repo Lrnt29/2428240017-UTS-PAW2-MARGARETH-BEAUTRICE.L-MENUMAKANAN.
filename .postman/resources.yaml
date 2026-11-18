@@ -1,0 +1,3 @@
+localResources:
+  collections:
+    - ../collection-api/jadwal-kuliah.postman_collection.json

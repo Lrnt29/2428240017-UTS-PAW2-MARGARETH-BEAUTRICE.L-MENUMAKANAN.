@@ -1,0 +1,149 @@
+{
+  "info": {
+    "name": "UTS PAW 2 - Menu Makanan (2428240017)",
+    "description": "REST API Manajemen Menu Makanan: CRUD, filter, sorting, dan pagination.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "id",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "POST - Tambah menu 1",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/menumakanan",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "menumakanan"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Pindang Ikan Patin\",\n  \"description\": \"Ikan patin dengan kuah bercita rasa khas Palembang\",\n  \"price\": 50000,\n  \"is_available\": true\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 201', () => pm.response.to.have.status(201));",
+              "pm.collectionVariables.set('id', pm.response.json().data._id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "POST - Tambah menu 2",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/menumakanan",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "menumakanan"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Pindang Tulang\",\n  \"description\": \"Iga yang menggoda dengan kuah bercita rasa khas Palembang\",\n  \"price\": 65000,\n  \"is_available\": true\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 201', () => pm.response.to.have.status(201));",
+              "pm.collectionVariables.set('id', pm.response.json().data._id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "POST - Tambah menu 3 (tidak tersedia)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/menumakanan",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "menumakanan"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Fish N Chips\",\n  \"description\": \"Ikan crispy dengan saus tartar dan perasan lemon\",\n  \"price\": 45000,\n  \"is_available\": false\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 201', () => pm.response.to.have.status(201));",
+              "pm.collectionVariables.set('id', pm.response.json().data._id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "POST - Input tidak valid (400)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/menumakanan",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "menumakanan"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"\",\n  \"description\": \"\",\n  \"price\": \"Rp.50.000\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 400', () => pm.response.to.have.status(400));"
+            ]
+          }
+        }
+      ]
+    },
+  
