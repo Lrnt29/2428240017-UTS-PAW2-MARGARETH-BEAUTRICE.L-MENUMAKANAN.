@@ -1,11 +1,6 @@
 import MenuMakanan from "../models/menumakanan.js";
 
-const SORTABLE_FIELDS = [
-  "name",
-  "description",
-  "price",
-  "is_available",
-];
+const SORTABLE_FIELDS = ["name", "description", "price", "is_available"];
 
 const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
@@ -100,7 +95,7 @@ const buildSort = (query) => {
       sort[field] = desc || orderDesc ? -1 : 1;
     }
   }
-
+};
 
 export const createMenu = async (req, res, next) => {
   try {
