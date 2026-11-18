@@ -1,6 +1,11 @@
 import MenuMakanan from "../models/menumakanan.js";
 
-const SORTABLE_FIELDS = ["name", "description", "price", "is_available"];
+const SORTABLE_FIELDS = [
+  "name",
+  "description",
+  "price",
+  "is_available",
+];
 
 const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
@@ -96,95 +101,93 @@ const buildSort = (query) => {
     }
   }
 
-  export const createMenu = async (req, res, next) => {
-    try {
-      const data = await MenuMakanan.create(req.body);
-      res.status(201).json({
-        success: true,
-        message: "Menu baru berhasil ditambahkan",
-        data,
-      });
-    } catch (err) {
-      next(err);
+
+export const createMenu = async (req, res, next) => {
+  try {
+    const data = await MenuMakanan.create(req.body);
+    res.status(201).json({
+      success: true,
+      message: "Menu baru berhasil ditambahkan",
+      data,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getAllMenu = async (req, res, next) => {
+  try {
+    const filter = buildFilter(req.query);
+    const sort = buildSort(req.query);
+
+    const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
+    const limit = Math.min(
+      Math.max(parseInt(req.query.limit, 10) || 10, 1),
+      100,
+    );
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await Promise.all([
+      MenuMakanan.find(filter).sort(sort).skip(skip).limit(limit),
+      MenuMakanan.countDocuments(filter),
+    ]);
+
+    res.status(200).json({
+      success: true,
+      message:
+        total === 0 ? "Menu tidak ditemukan" : "Data menu berhasil diambil",
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+      data,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getMenuById = async (req, res, next) => {
+  try {
+    const data = await MenuMakanan.findById(req.params.id);
+    if (!data) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Menu tidak ditemukan" });
     }
-  };
+    res.status(200).json({
+      success: true,
+      message: "Detail menu berhasil diambil",
+      data,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 
-  export const getAllMenu = async (req, res, next) => {
-    try {
-      const filter = buildFilter(req.query);
-      const sort = buildSort(req.query);
-
-      const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
-      const limit = Math.min(
-        Math.max(parseInt(req.query.limit, 10) || 10, 1),
-        100,
-      );
-      const skip = (page - 1) * limit;
-
-      const [data, total] = await Promise.all([
-        MenuMakanan.find(filter).sort(sort).skip(skip).limit(limit),
-        MenuMakanan.countDocuments(filter),
-      ]);
-
-      res.status(200).json({
-        success: true,
-        message:
-          total === 0 ? "Menu tidak ditemukan" : "Data menu berhasil diambil",
-        meta: {
-          total,
-          page,
-          limit,
-          totalPages: Math.ceil(total / limit),
-        },
-        data,
-      });
-    } catch (err) {
-      next(err);
+export const updateMenu = async (req, res, next) => {
+  try {
+    const data = await MenuMakanan.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!data) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Menu tidak ditemukan" });
     }
-  };
+    res.status(200).json({
+      success: true,
+      message: "Menu berhasil diperbarui",
+      data,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 
-  export const getMenuById = async (req, res, next) => {
-    try {
-      const data = await MenuMakanan.findById(req.params.id);
-      if (!data) {
-        return res
-          .status(404)
-          .json({ success: false, message: "Menu tidak ditemukan" });
-      }
-      res.status(200).json({
-        success: true,
-        message: "Detail menu berhasil diambil",
-        data,
-      });
-    } catch (err) {
-      next(err);
-    }
-  };
-
-  export const updateMenu = async (req, res, next) => {
-    try {
-      const data = await MenuMakanan.findByIdAndUpdate(
-        req.params.id,
-        req.body,
-        {
-          new: true,
-          runValidators: true,
-        },
-      );
-      if (!data) {
-        return res
-          .status(404)
-          .json({ success: false, message: "Menu tidak ditemukan" });
-      }
-      res.status(200).json({
-        success: true,
-        message: "Menu berhasil diperbarui",
-        data,
-      });
-    } catch (err) {
-      next(err);
-    }
-  };
 export const deleteMenu = async (req, res, next) => {
   try {
     const data = await MenuMakanan.findByIdAndDelete(req.params.id);
